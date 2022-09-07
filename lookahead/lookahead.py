@@ -68,8 +68,7 @@ class Lookahead(torch.optim.Optimizer):
               param_state['cached_params'].copy_(p.data)
               if self.pullback_momentum == "pullback":
                   internal_momentum = self.optimizer.state[p]["momentum_buffer"]
-                  self.optimizer.state[p]["momentum_buffer"] = internal_momentum.mul_(self.alpha).add_(
-                      1.0 - self.alpha, param_state["cached_mom"])
+                  self.optimizer.state[p]["momentum_buffer"] = internal_momentum.mul_(self.alpha).add_(param_state["cached_mom"], alpha=1.0 - self.alpha)
                   param_state["cached_mom"] = self.optimizer.state[p]["momentum_buffer"]
               elif self.pullback_momentum == "reset":
                   self.optimizer.state[p]["momentum_buffer"] = torch.zeros_like(p.data)
