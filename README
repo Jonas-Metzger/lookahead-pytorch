@@ -1,0 +1,10 @@
+first 
+```
+pip install git+https://github.com/gbaydin/lookahead-pytorch.git
+```
+
+then 
+
+```
+from lookahead import Lookahead
+```
