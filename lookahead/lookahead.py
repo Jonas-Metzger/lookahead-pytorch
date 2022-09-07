@@ -2,7 +2,7 @@ import torch
 import math 
 
 class Lookahead(torch.optim.Optimizer):
-    def __init__(self, optimizer, alpha=0.5, pullback_momentum="none"):
+    def __init__(self, optimizer, alpha=0.5, pullback_momentum="reset"):
         '''
         :param optimizer:inner optimizer
         :param alpha(float): linear interpolation factor. 1.0 recovers the inner optimizer.
