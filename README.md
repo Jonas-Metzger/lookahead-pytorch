@@ -1,7 +1,7 @@
 first 
 
 ```
-pip install git+https://github.com/gbaydin/lookahead-pytorch.git
+pip install git+https://github.com/Jonas-Metzger/lookahead-pytorch.git
 ```
 
 then 
