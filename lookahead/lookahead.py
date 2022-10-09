@@ -15,6 +15,7 @@ class Lookahead(torch.optim.Optimizer):
         self.param_groups = self.optimizer.param_groups
         self.alpha = alpha
         self.step_counter = 0
+        self.pullback_every = pullback_every
         assert pullback_momentum in ["reset", "pullback", "none"]
         self.pullback_momentum = pullback_momentum
         self.state = defaultdict(dict)
