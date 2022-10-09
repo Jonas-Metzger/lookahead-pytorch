@@ -2,7 +2,7 @@ import torch
 import math 
 
 class Lookahead(torch.optim.Optimizer):
-    def __init__(self, optimizer, alpha=0.5, pullback_momentum="reset"):
+    def __init__(self, optimizer, alpha=0.5, pullback_every=3, pullback_momentum="reset"):
         '''
         :param optimizer:inner optimizer
         :param alpha(float): linear interpolation factor. 1.0 recovers the inner optimizer.
@@ -14,8 +14,10 @@ class Lookahead(torch.optim.Optimizer):
         self.optimizer = optimizer
         self.param_groups = self.optimizer.param_groups
         self.alpha = alpha
+        self.step_counter = 0
         assert pullback_momentum in ["reset", "pullback", "none"]
         self.pullback_momentum = pullback_momentum
+        self.optimizer.state[p]["momentum_buffer"] = torch.zeros(1)
         self.state = defaultdict(dict)
         for group in self.optimizer.param_groups:
             for p in group['params']:
@@ -57,8 +59,13 @@ class Lookahead(torch.optim.Optimizer):
                 p.data.copy_(param_state['backup_params'])
                 del param_state['backup_params']
 
-    def step(self, closure=None):
-        return self.optimizer.step(closure)
+    def step( self, closure=None):
+        self.step_counter += 1
+        s = self.optimizer.step(closure)
+        if self.step_counter == self.pullback_every:
+          self.step_counter = 0
+          self.pullback()
+        return s
 
     def pullback(self):
       for group in self.optimizer.param_groups:
