@@ -17,11 +17,11 @@ class Lookahead(torch.optim.Optimizer):
         self.step_counter = 0
         assert pullback_momentum in ["reset", "pullback", "none"]
         self.pullback_momentum = pullback_momentum
-        self.optimizer.state[p]["momentum_buffer"] = torch.zeros(1)
         self.state = defaultdict(dict)
         for group in self.optimizer.param_groups:
             for p in group['params']:
                 param_state = self.state[p]
+                self.optimizer.state[p]["momentum_buffer"] = torch.zeros(1)
                 param_state['cached_params'] = torch.zeros_like(p.data)
                 param_state['cached_params'].copy_(p.data)
 
