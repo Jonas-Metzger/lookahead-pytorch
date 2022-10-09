@@ -21,7 +21,6 @@ class Lookahead(torch.optim.Optimizer):
         for group in self.optimizer.param_groups:
             for p in group['params']:
                 param_state = self.state[p]
-                self.optimizer.state[p]["momentum_buffer"] = torch.zeros(1)
                 param_state['cached_params'] = torch.zeros_like(p.data)
                 param_state['cached_params'].copy_(p.data)
 
