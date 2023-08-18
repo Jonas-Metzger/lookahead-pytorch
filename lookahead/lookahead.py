@@ -152,7 +152,7 @@ class OAdam(torch.optim.Optimizer):
                 bias_correction2 = 1 - beta2 ** state['step']
                 step_size = group['lr'] * math.sqrt(bias_correction2) / bias_correction1
                 # Optimistic update :)
-                p.data.addcdiv_(step_size, exp_avg, exp_avg_sq.sqrt().add(group['eps']))
+                p.data.addcdiv_(exp_avg, exp_avg_sq.sqrt().add(group['eps']), value=step_size)
                 # Decay the first and second moment running average coefficient
                 exp_avg.mul_(beta1).add_(1 - beta1, grad)
                 exp_avg_sq.mul_(beta2).addcmul_(1 - beta2, grad, grad)
@@ -163,5 +163,5 @@ class OAdam(torch.optim.Optimizer):
                     denom = max_exp_avg_sq.sqrt().add_(group['eps'])
                 else:
                     denom = exp_avg_sq.sqrt().add_(group['eps'])
-                p.data.addcdiv_(-2.0 * step_size, exp_avg, denom)
+                p.data.addcdiv_(exp_avg, denom, value=-2.0 * step_size)
         return loss   
